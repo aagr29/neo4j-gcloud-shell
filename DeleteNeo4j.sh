@@ -7,3 +7,4 @@ echo "Deleting instance and firewall rules"
 gcloud compute instances delete "$1" --zone "australia-southeast1-a" 
 gcloud compute firewall-rules delete "$1" # --quiet
 exit $?
+#yolo
