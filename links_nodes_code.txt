@@ -1,0 +1,20 @@
+//create constraint 
+CREATE INDEX nodeidindex FOR (n:Nodeid) ON (n.id)
+
+//apoc iterati
+CALL apoc.periodic.iterate(" LOAD CSV WITH HEADERS FROM 'https://storage.googleapis.com/neo4j_data_aniket/build_nodes_type.csv'  
+AS network return network" ,"
+create (n:Nodeid{id:toInteger(network.Id),Type:network.Type})",
+{batchSize:1000,iterateList:true})
+
+
+//apoc iterati
+CALL apoc.periodic.iterate(" LOAD CSV WITH HEADERS FROM 'https://storage.googleapis.com/neo4j_data_aniket/build/links.csv'  
+AS network return network" ,
+"
+match (n:Nodeid)
+where n.id=toInteger(network.Start_Node_Id) and network.End_Node_Id is not null
+match (m:Nodeid)
+where m.id=toInteger(network.End_Node_Id) and network.End_Node_Id is not null
+create (n)-[:edgeId{edgeId: network.Id}]->(m)",
+{batchSize:1000,iterateList:true})
